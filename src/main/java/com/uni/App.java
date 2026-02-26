@@ -42,21 +42,21 @@ public class App {
             System.out.println("=== Аналіз взаємного розміщення прямих ===\n");
 
             // Пряма 1 (Канонічна)
-            if (!isReadingFromFile) System.out.println("Пряма 1 (канонічна)");
+            if (!isReadingFromFile) System.out.println("Пряма 1 (канонічна) (l!=0, m!=0)");
             double x01 = readValue("x01", false);
             double y01 = readValue("y01", false);
             double l1 = readValue("l1", true);
             double m1 = readValue("m1", true);
 
             // Пряма 2 (Канонічна)
-            if (!isReadingFromFile) System.out.println("\nПряма 2 (канонічна)");
+            if (!isReadingFromFile) System.out.println("\nПряма 2 (канонічна) (l!=0, m!=0)");
             double x02 = readValue("x02", false);
             double y02 = readValue("y02", false);
             double l2 = readValue("l2", true);
             double m2 = readValue("m2", true);
 
             // Пряма 3 (Кутовий коефіцієнт)
-            if (!isReadingFromFile) System.out.println("\nПряма 3 (y = kx + b)");
+            if (!isReadingFromFile) System.out.println("\nПряма 3 (y = kx + b) (b!=0)");
             double k = readValue("k", false);
             double b = readValue("b", true);
 
@@ -74,19 +74,51 @@ public class App {
     }
 
     private double readValue(String paramName, boolean mustBeNonZero) throws ValidationException {
-        if (!isReadingFromFile) System.out.print("Введіть " + paramName + ": ");
+        boolean firstAttempt = true;
 
-        while (scanner.hasNext() && !scanner.hasNextDouble()) {
-            String line = scanner.next();
-            if (line.startsWith("#")) { scanner.nextLine(); continue; }
-            throw new ValidationException("Некоректне значення: " + line, "Введіть число");
+        while (true) {
+            try {
+                if (!isReadingFromFile && firstAttempt) {
+                    System.out.print("Введіть " + paramName + ": ");
+                    firstAttempt = false;
+                }
+
+                while (scanner.hasNext() && !scanner.hasNextDouble()) {
+                    String line = scanner.next();
+                    if (line.startsWith("#")) {
+                        scanner.nextLine();
+                        continue;
+                    }
+
+                    if (isReadingFromFile) {
+                        throw new ValidationException("Некоректне значення: " + line, "Перевірте вхідний файл");
+                    }
+
+                    scanner.nextLine();
+                    System.err.println("!!! ПОМИЛКА: Некоректне значення: " + line);
+                    System.err.println("Рекомендація: Введіть число");
+                    System.out.print("\nСпробуйте ще раз. Введіть " + paramName + ": ");
+                }
+
+                if (!scanner.hasNextDouble()) {
+                    throw new ValidationException("Відсутні дані", "Перевірте вхідний потік");
+                }
+
+                double val = scanner.nextDouble();
+                validator.validateRange(val, paramName);
+                if (mustBeNonZero) validator.validateNonZero(val, paramName);
+                return val;
+
+            } catch (ValidationException e) {
+                if (isReadingFromFile) {
+                    throw e;
+                }
+
+                scanner.nextLine();
+                System.err.println("\n!!! ПОМИЛКА: " + e.getMessage());
+                System.err.println("Рекомендація: " + e.getRecommendation());
+                System.out.print("\nСпробуйте ще раз. Введіть " + paramName + ": ");
+            }
         }
-
-        if (!scanner.hasNextDouble()) throw new ValidationException("Відсутні дані", "Перевірте вхідний потік");
-
-        double val = scanner.nextDouble();
-        validator.validateRange(val, paramName);
-        if (mustBeNonZero) validator.validateNonZero(val, paramName);
-        return val;
     }
 }
