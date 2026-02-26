@@ -1,5 +1,6 @@
 package com.uni.model;
 
+import com.uni.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,7 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Point {
-    private static final double EPSILON = 1e-8;
 
     private final double x;
     private final double y;
@@ -18,16 +18,11 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return isZero(this.x - point.x) && isZero(this.y - point.y);
+        return Constants.isZero(this.x - point.x) && Constants.isZero(this.y - point.y);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(Math.round(x / EPSILON), Math.round(y / EPSILON));
-    }
-
-    private static boolean isZero(double value) {
-        return Math.abs(value) < EPSILON;
-
+        return java.util.Objects.hash(Math.round(x / Constants.EPSILON), Math.round(y / Constants.EPSILON));
     }
 }

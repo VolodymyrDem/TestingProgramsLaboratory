@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineIntersectionCalculator {
-    private static final double EPSILON = 1e-8;
 
     public IntersectionResult calculate(
             double x01, double y01, double l1, double m1,
@@ -34,7 +33,7 @@ public class LineIntersectionCalculator {
                                    double a2, double b2, double c2) {
         double det = a1 * b2 - a2 * b1;
 
-        if (isZero(det)) {
+        if (Constants.isZero(det)) {
             return null;
         }
 
@@ -46,9 +45,9 @@ public class LineIntersectionCalculator {
 
     private boolean areCoincident(double a1, double b1, double c1,
                                   double a2, double b2, double c2) {
-        return isZero(a1 * b2 - a2 * b1) &&
-                isZero(a1 * c2 - a2 * c1) &&
-                isZero(b1 * c2 - b2 * c1);
+        return Constants.isZero(a1 * b2 - a2 * b1) &&
+                Constants.isZero(a1 * c2 - a2 * c1) &&
+                Constants.isZero(b1 * c2 - b2 * c1);
     }
 
     private IntersectionResult analyzeGeneralCase(double a1, double b1, double c1,
@@ -64,21 +63,12 @@ public class LineIntersectionCalculator {
 
         List<Point> uniquePoints = new ArrayList<>();
         if (p12 != null) uniquePoints.add(p12);
-        if (p13 != null && !containsPoint(uniquePoints, p13)) uniquePoints.add(p13);
-        if (p23 != null && !containsPoint(uniquePoints, p23)) uniquePoints.add(p23);
+        if (p13 != null && !uniquePoints.contains(p13)) uniquePoints.add(p13);
+        if (p23 != null && !uniquePoints.contains(p23)) uniquePoints.add(p23);
 
         if (uniquePoints.isEmpty()) return new IntersectionResult(IntersectionResultType.NO_INTERSECTION, new ArrayList<>());
         if (uniquePoints.size() == 1) return new IntersectionResult(IntersectionResultType.ONE_POINT, uniquePoints);
         if (uniquePoints.size() == 2) return new IntersectionResult(IntersectionResultType.TWO_POINTS, uniquePoints);
         return new IntersectionResult(IntersectionResultType.THREE_POINTS, uniquePoints);
-    }
-
-    private boolean containsPoint(List<Point> points, Point p) {
-        for (Point existing : points) if (existing.equals(p)) return true;
-        return false;
-    }
-
-    private boolean isZero(double value) {
-        return Math.abs(value) < EPSILON;
     }
 }

@@ -25,13 +25,11 @@ class InputValidatorParameterizedTest {
             assertDoesNotThrow(() -> validator.validateRange(value, paramName),
                     String.format("Тест '%s': Значення %f має бути валідним. %s",
                             testName, value, description));
-            System.out.printf("✓ %s: Валідне значення %f для %s%n", testName, value, paramName);
         } else {
             assertThrows(ValidationException.class,
                     () -> validator.validateRange(value, paramName),
                     String.format("Тест '%s': Значення %f має бути невалідним. %s",
                             testName, value, description));
-            System.out.printf("✓ %s: Невалідне значення %f коректно відхилено%n", testName, value);
         }
     }
 
@@ -51,13 +49,11 @@ class InputValidatorParameterizedTest {
                 validator.validateNonZero(value, paramName);
             }, String.format("Тест '%s': Значення %f має бути ненульовим. %s",
                     testName, value, description));
-            System.out.printf("✓ %s: Ненульове значення %f прийнято%n", testName, value);
         } else {
             assertThrows(ValidationException.class,
                     () -> validator.validateNonZero(value, paramName),
                     String.format("Тест '%s': Значення %f має бути відхилено як нульове. %s",
                             testName, value, description));
-            System.out.printf("✓ %s: Нульове значення %f коректно відхилено%n", testName, value);
         }
     }
 }

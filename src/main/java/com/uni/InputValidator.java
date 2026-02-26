@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InputValidator {
-    private static final double EPSILON = 1e-8;
 
     private final int minValue;
     private final int maxValue;
@@ -27,15 +26,11 @@ public class InputValidator {
     }
 
     public void validateNonZero(double value, String paramName) throws ValidationException {
-        if (isZero(value)) {
+        if (Constants.isZero(value)) {
             throw new ValidationException(
-                    "Значення " + paramName + " не може дорівнювати 0 (|" + paramName + "| < " + EPSILON + ")",
+                    "Значення " + paramName + " не може дорівнювати 0 (|" + paramName + "| < " + Constants.EPSILON + ")",
                     "Введіть ненульове значення для параметра " + paramName
             );
         }
-    }
-
-    public static boolean isZero(double value) {
-        return Math.abs(value) < EPSILON;
     }
 }

@@ -42,7 +42,9 @@ public enum IntersectionResultType {
     THREE_POINTS("Три точки перетину прямих") {
         @Override
         public String formatMessage(List<Point> points) {
-            if (points.size() < 3) return getMessage();
+            if (points == null || points.size() < 3) {
+                throw new IllegalArgumentException("THREE_POINTS result requires exactly three intersection points");
+            }
             Point p1 = points.get(0);
             Point p2 = points.get(1);
             Point p3 = points.get(2);

@@ -44,9 +44,6 @@ class LineIntersectionCalculatorParameterizedTest {
                     String.format("Тест '%s': Очікувалась %d точка(ок), але отримано %d. Опис: %s",
                             testName, expectedPointsCount, result.points().size(), description));
         }
-
-        System.out.printf("✓ %s: %s - %s (точок: %d)%n",
-                testName, result.type(), description, result.points().size());
     }
 
     @ParameterizedTest(name = "Граничний тест {0}")
@@ -56,8 +53,7 @@ class LineIntersectionCalculatorParameterizedTest {
             String testName,
             double x01, double y01, double l1, double m1,
             double x02, double y02, double l2, double m2,
-            double k, double b,
-            String description) {
+            double k, double b) {
 
         IntersectionResult result =
                 calculator.calculate(x01, y01, l1, m1, x02, y02, l2, m2, k, b);
@@ -65,7 +61,5 @@ class LineIntersectionCalculatorParameterizedTest {
         assertNotNull(result, "Результат не повинен бути null для граничного тесту: " + testName);
         assertNotNull(result.type(), "Тип результату не повинен бути null");
         assertNotNull(result.points(), "Список точок не повинен бути null");
-
-        System.out.printf("✓ Граничний тест %s: %s - %s%n", testName, result.type(), description);
     }
 }
